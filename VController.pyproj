@@ -23,9 +23,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Qtui\VC_ui.py" />
     <Compile Include="VController.py" />
-    <Compile Include="mainwindow.py" />
-    <Compile Include="VC_ui.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
@@ -37,6 +36,15 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Qtui\" />
+    <Folder Include="Qtui\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Qtui\VC_ui.ui" />
+    <Content Include="Qtui\VC_ui.ui.autosave" />
+    <Content Include="Qtui\__pycache__\VC_ui.cpython-37.pyc" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
