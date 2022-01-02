@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>VController</Name>
     <RootNamespace>VController</RootNamespace>
-    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|3.9env|$(MSBuildProjectFullPath)</InterpreterId>
     <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -23,10 +23,23 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Camera.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Qtui\VC_ui.py" />
     <Compile Include="VController.py" />
+    <Compile Include="VClogging.py" />
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="3.9env\">
+      <Id>3.9env</Id>
+      <Version>3.9</Version>
+      <Description>3.9env (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>3.7</Version>
@@ -38,6 +51,9 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets\" />
+    <Folder Include="lib\" />
+    <Folder Include="log\" />
     <Folder Include="Qtui\" />
     <Folder Include="Qtui\__pycache__\" />
   </ItemGroup>
@@ -45,6 +61,7 @@
     <Content Include="Qtui\VC_ui.ui" />
     <Content Include="Qtui\VC_ui.ui.autosave" />
     <Content Include="Qtui\__pycache__\VC_ui.cpython-37.pyc" />
+    <Content Include="Settings.json" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
