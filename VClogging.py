@@ -47,6 +47,7 @@ class MyReceiver(QObject):
             text = self.queue.get()
             self.mysignal.emit(text)
 
+
 class ColorfulHandler(logging.StreamHandler):
     def emit(self, record: logging.LogRecord) -> None:
         record.levelname = mapping[record.levelname]
@@ -55,19 +56,19 @@ class ColorfulHandler(logging.StreamHandler):
 
 def root_logger():
     # logging.basicConfig(handlers=[ColorfulHandler()], level=logging.DEBUG)
-    # root logger‚ğæ“¾
+    # root loggerã‚’å–å¾—
 
     logger = getLogger()
 
-    # formatter‚ğì¬
+    # formatterã‚’ä½œæˆ
     formatter = Formatter('%(asctime)s %(name)s %(funcName)s [%(levelname)s]: %(message)s')
 
-    # handler‚ğì¬‚µƒtƒH[ƒ}ƒbƒ^[‚ğİ’è
+    # handlerã‚’ä½œæˆã—ãƒ•ã‚©ãƒ¼ãƒãƒƒã‚¿ãƒ¼ã‚’è¨­å®š
     # handler = ColorfulHandler()
     handler = StreamHandler()
     handler.setFormatter(formatter)
 
-    # ƒtƒ@ƒCƒ‹ƒnƒ“ƒhƒ‰‚ğì¬
+    # ãƒ•ã‚¡ã‚¤ãƒ«ãƒãƒ³ãƒ‰ãƒ©ã‚’ä½œæˆ
     rh = logging.FileHandler(
         r'./log/log_' + time + '.log',
         encoding='utf-8',
@@ -75,10 +76,10 @@ def root_logger():
 
     rh.setFormatter(formatter)
 
-    # logger‚Éhandler‚ğİ’èAƒCƒxƒ“ƒg•ß‘¨‚Ì‚½‚ß‚ÌƒŒƒxƒ‹‚ğİ’è
+    # loggerã«handlerã‚’è¨­å®šã€ã‚¤ãƒ™ãƒ³ãƒˆæ•æ‰ã®ãŸã‚ã®ãƒ¬ãƒ™ãƒ«ã‚’è¨­å®š
     logger.addHandler(handler)
     logger.addHandler(rh)
-    # log level‚ğİ’è
+    # log levelã‚’è¨­å®š
     logger.setLevel(DEBUG)
     # logger.debug("hello")
     # logger.info("hello")

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from __future__ import annotations
 
 import math
 import time
@@ -190,7 +191,24 @@ class SendFormat:
 
 # This class handle L stick and R stick at any angles
 class Direction:
-    def __init__(self, stick, angle, magnification=1.0, isDegree=True, showName=None):
+    UP = None
+    RIGHT = None
+    DOWN = None
+    LEFT = None
+    UP_RIGHT = None
+    DOWN_RIGHT = None
+    DOWN_LEFT = None
+    UP_LEFT = None
+    R_UP = None
+    R_RIGHT = None
+    R_DOWN = None
+    R_LEFT = None
+    R_UP_RIGHT = None
+    R_DOWN_RIGHT = None
+    R_DOWN_LEFT = None
+    R_UP_LEFT = None
+
+    def __init__(self, stick: Stick, angle, magnification: float = 1.0, isDegree: bool = True, showName: str = None):
 
         self._logger = getLogger(__name__)
         self._logger.addHandler(NullHandler())
@@ -225,14 +243,14 @@ class Direction:
     def __str__(self):
         if self.mag != 1.0:
             if self.showName:
-                return f"<{self.stick},{self.mag},{self.showName}>"
+                return f"<{self.stick}, {self.mag},{self.showName}>"
             else:
-                return f"<{self.stick},{self.mag},{self.angle_for_show}>"
+                return f"<{self.stick}, {self.mag},{self.angle_for_show}>"
         else:
             if self.showName:
-                return f"<{self.stick},{self.showName}>"
+                return f"<{self.stick}, {self.showName}>"
             else:
-                return f"<{self.stick},{self.angle_for_show}>"
+                return f"<{self.stick}, {self.angle_for_show}>"
 
     def __repr__(self):
         if self.mag != 1.0:
@@ -295,7 +313,6 @@ Direction.LEFT = Direction(Stick.LEFT, -180, showName='LEFT')
 Direction.UP_RIGHT = Direction(Stick.LEFT, 45, showName='UP_RIGHT')
 Direction.DOWN_RIGHT = Direction(Stick.LEFT, -45, showName='DOWN_RIGHT')
 Direction.DOWN_LEFT = Direction(Stick.LEFT, -135, showName='DOWN_LEFT')
-Direction.DOWN_LEFT = Direction(Stick.LEFT, -135, showName='DOWN_LEFT')
 Direction.UP_LEFT = Direction(Stick.LEFT, 135, showName='UP_LEFT')
 # Right stick for ease of use
 Direction.R_UP = Direction(Stick.RIGHT, 90, showName='UP')
@@ -321,14 +338,18 @@ class KeyPress:
         self.ser = ser
         self.format = SendFormat()
         self.holdButton = []
-        self.btn_name2 = ['LEFT', 'RIGHT', 'UP', 'DOWN', 'UP_LEFT', 'UP_RIGHT', 'DOWN_LEFT', 'DOWN_RIGHT']
+        self.btn_name2: list[str] = ['LEFT', 'RIGHT', 'UP', 'DOWN', 'UP_LEFT', 'UP_RIGHT', 'DOWN_LEFT', 'DOWN_RIGHT']
         self.buttons = set([])
-        self.buttons_pressed = {eval(f"Button.{i.name}"): {"time": time.perf_counter(), "CursorPosition": None} for i in Button}
+        self.buttons_pressed = {eval(f"Button.{i.name}"): {"time": time.perf_counter(), "CursorPosition": None} for i in
+                                Button}
+        self.hats_pressed = {eval(f"Hat.{i.name}"): {"time": time.perf_counter(), "CursorPosition": None} for i in
+                             Hat}
         self.sticks_pressed = {Stick.LEFT: time.perf_counter(), Stick.RIGHT: time.perf_counter()}
 
         self.hats = set([])
-        self.Lstick_state = [False, None, 1, None]  # [isUse = False, angle = None, magnitude = 1, time]
-        self.Rstick_state = [False, None, 1, None]
+        # [isUse = False, angle = None, magnitude = 1, time]
+        self.Lstick_state: list[bool, any, float, any] = [False, None, 1, None]
+        self.Rstick_state: list[bool, any, float, any] = [False, None, 1, None]
         self.sticks = [self.Lstick_state, self.Rstick_state]
         self.last_pressed_button = None
 
@@ -354,7 +375,7 @@ class KeyPress:
         buttons_pressed = []
         hats_pressed = []
         for btn in self.holdButton:
-            if not btn in btns:
+            if btn not in btns:
                 btns.append(btn)
 
         for btn in btns:
@@ -375,6 +396,9 @@ class KeyPress:
         for btn in set(buttons_pressed) - set(self.holdButton):
             self.buttons_pressed[btn]["time"] = t
             self.buttons_pressed[btn]["CursorPosition"] = None
+        for btn in set(hats_pressed) - set(self.holdButton):
+            self.hats_pressed[btn]["time"] = t
+            self.hats_pressed[btn]["CursorPosition"] = None
 
         self.format.setButton(buttons_pressed)
         self.format.setHat(hats_pressed)
@@ -386,6 +410,7 @@ class KeyPress:
         # self._logger.debug(f": {list(map(str,self.format.format.values()))}")
 
     def inputEnd(self, btns, ifprint=True, unset_hat=True):
+        t = time.perf_counter()
         Lstick_change = False
         Rstick_change = False
         if not isinstance(btns, list):
@@ -418,18 +443,22 @@ class KeyPress:
         tilts = []
         for direction in directions_release:
             if direction.stick == Stick.LEFT:
-                self.logger.debug(f"{direction}: {time.perf_counter() - self.sticks[0][3]:.3f}")
+                self.logger.debug(f"{direction}: {t - self.sticks[0][3]:.3f}")
             elif direction.stick == Stick.RIGHT:
-                self.logger.debug(f"{direction}: {time.perf_counter() - self.sticks[1][3]:.3f}")
+                self.logger.debug(f"{direction}: {t - self.sticks[1][3]:.3f}")
             tiltings = direction.getTilting()
             for tilting in tiltings:
                 tilts.append(tilting)
-        #self.logger.debug("tilts", tilts)
-        t = time.perf_counter()
-        for btn in set(buttons_release):
-            self.logger.debug(f"{btn.name}: {time.perf_counter() - self.buttons_pressed[btn]['time']:.3f}")
-            #self._logger.debug(f"{btn.name}: {time.perf_counter():.3f}")
-            
+        # self.logger.debug("tilts", tilts)
+        try:
+            for btn in set(buttons_release):
+                self.logger.debug(f"{btn.name}: {t - self.buttons_pressed[btn]['time']:.3f}")
+                # self._logger.debug(f"{btn.name}: {time.perf_counter():.3f}")
+            for btn in set(hats_release):
+                self.logger.debug(f"{btn.name}: {t - self.hats_pressed[btn]['time']:.3f}")
+                # self._logger.debug(f"{btn.name}: {time.perf_counter():.3f}")
+        except Exception as e:
+            self.logger.error("Error:", e)
 
         self.format.unsetButton(buttons_release)
         self.format.unsetHat()
@@ -447,7 +476,7 @@ class KeyPress:
         for btn in btns:
             if btn in self.holdButton:
                 print('Warning: ' + btn.name + ' is already in holding state')
-                self._logger.warning(f"Warning: {btn.name} is already in holding state")
+                self.logger.warning(f"Warning: {btn.name} is already in holding state")
                 return
 
             self.holdButton.append(btn)

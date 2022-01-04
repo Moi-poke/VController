@@ -13,7 +13,12 @@ import datetime
 from queue import Queue
 from logging import StreamHandler, getLogger, DEBUG, NullHandler
 
+
 def imwrite(filename: str, img, params=None):
+    logger = getLogger(__name__)
+    logger.addHandler(NullHandler())
+    logger.setLevel(DEBUG)
+    logger.propagate = True
     try:
         ext = os.path.splitext(filename)[1]
         result, n = cv2.imencode(ext, img, params)
@@ -26,7 +31,7 @@ def imwrite(filename: str, img, params=None):
             return False
     except Exception as e:
         print(e)
-        _logger.error(f"Image Write Error: {e}")
+        logger.error(f"Image Write Error: {e}")
         return False
 
 
@@ -60,13 +65,10 @@ class VideoThread(QThread):
         while True:
             if not self.is_paused:
                 if self.camera is not None and self.camera.isOpened():
-                        ret, self.cv_img = self.camera.read()
-                        if ret:
-                            self.change_pixmap_signal.emit(self.cv_img)
-                        self.busy_wait(1 / np.float64(self.fps))
-
-
-
+                    ret, self.cv_img = self.camera.read()
+                    if ret:
+                        self.change_pixmap_signal.emit(self.cv_img)
+                    self.busy_wait(1 / np.float64(self.fps))
 
     def reload_camera(self, CID):
         if self.CameraID == self.temp_cameraID:
@@ -85,8 +87,7 @@ class VideoThread(QThread):
             except Exception as e:
                 self.logger.error(e)
 
-
-    def saveCapture(self,crop: list[int] = None, crop_ax : list[int] = None, filename: str=None):
+    def saveCapture(self, crop: list[int] = None, crop_ax: list[int] = None, filename: str = None):
         crop = None
         if crop_ax is None:
             crop_ax = [0, 0, 1280, 720]
@@ -96,8 +97,10 @@ class VideoThread(QThread):
             filename = dt_now.strftime('%Y-%m-%d_%H-%M-%S') + ".png"
         else:
             filename = filename + ".png"
-        
+
         if crop is None:
+            image = self.cv_img
+        else:
             image = self.cv_img
 
         if not os.path.exists(self.capture_dir):
@@ -110,19 +113,17 @@ class VideoThread(QThread):
         except cv2.error as e:
             self.logger.error(f"Capture Failed :{e}")
 
-
     def busy_wait(self, dt):
         current_time = time.perf_counter()
-        while (time.perf_counter() < current_time + dt):
+        while time.perf_counter() < current_time + dt:
             pass
-    
+
     def pause(self):
         self.is_paused = True
-        
+
     def resume(self):
         self.is_paused = False
-    
-        
+
     def kill(self):
         self.logger.debug("Kill VideoThread")
         self.terminate()

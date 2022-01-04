@@ -85,7 +85,7 @@ class Sender:
         # Show sending serial datas
         if self.is_show_serial:
             self.logger.debug(row)
-        #return time.perf_counter()
+        # return time.perf_counter()
         return
 
     def show_input(self, output):
@@ -105,12 +105,12 @@ class Sender:
             if len(btns) == 0:
                 if self.L_holding:
                     self.logger.debug('self.press(Direction({}, {:.0f}), '
-                                       'duration={:.2f})'.format("Stick.LEFT", self._L_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format("Stick.LEFT", self._L_holding,
+                                                                self.time_bef - self.time_aft))
                 elif self.R_holding:
                     self.logger.debug('self.press(Direction({}, {:.0f}), '
-                                       'duration={:.2f})'.format("Stick.RIGHT", self._R_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format("Stick.RIGHT", self._R_holding,
+                                                                self.time_bef - self.time_aft))
                 if LStick == [128, 128]:
                     self.L_holding = False
                 if RStick == [128, 128]:
@@ -122,25 +122,25 @@ class Sender:
                     if useRStick and useRStick:
                         if len(btns) == 3:
                             self.logger.debug('self.press([{}], '
-                                               'duration={:.2f})'.format(", ".join(btns[1:]),
-                                                                         self.time_bef - self.time_aft))
+                                              'duration={:.2f})'.format(", ".join(btns[1:]),
+                                                                        self.time_bef - self.time_aft))
                         elif len(btns) > 3:
                             self.logger.debug('self.press([{}], '
-                                               'duration={:.2f})'.format(", ".join(btns[1:]),
-                                                                         self.time_bef - self.time_aft))
+                                              'duration={:.2f})'.format(", ".join(btns[1:]),
+                                                                        self.time_bef - self.time_aft))
                         self.L_holding = False
                         self.R_holding = False
                     else:
                         if len(btns) > 2:
                             self.logger.debug('self.press([{}], '
-                                               'duration={:.2f})'.format(", ".join(btns[1:]),
-                                                                         self.time_bef - self.time_aft))
+                                              'duration={:.2f})'.format(", ".join(btns[1:]),
+                                                                        self.time_bef - self.time_aft))
                             self.L_holding = False
                             self.R_holding = False
                         if len(btns) == 2:
                             self.logger.debug('self.press({}, '
-                                               'duration={:.2f})'.format(", ".join(btns[1:]),
-                                                                         self.time_bef - self.time_aft))
+                                              'duration={:.2f})'.format(", ".join(btns[1:]),
+                                                                        self.time_bef - self.time_aft))
                             self.L_holding = False
                             self.R_holding = False
                         elif len(btns) == 1:
@@ -153,54 +153,54 @@ class Sender:
                     self.R_holding = False
                     if len(btns) > 1:
                         self.logger.debug('self.press([{}, Direction({}, {:.0f})], '
-                                           'duration={:.2f})'.format(", ".join(btns[1:]), btns[0], self._L_holding,
-                                                                     self.time_bef - self.time_aft))
+                                          'duration={:.2f})'.format(", ".join(btns[1:]), btns[0], self._L_holding,
+                                                                    self.time_bef - self.time_aft))
                     elif len(btns) == 1:
                         self.logger.debug('self.press(Direction({}, {:.0f}), '
-                                           'duration={:.2f})'.format(btns[0], self._L_holding,
-                                                                     self.time_bef - self.time_aft))
+                                          'duration={:.2f})'.format(btns[0], self._L_holding,
+                                                                    self.time_bef - self.time_aft))
                 elif LStick == [128, 128] and RStick != [128, 128]:  # USING R stick
                     self.L_holding = False
                     self.R_holding = True
                     self._R_holding = RStick_deg
                     if len(btns) > 1:
                         self.logger.debug('self.press([{}, Direction({}, {:.0f})], '
-                                           'duration={:.2f})'.format(", ".join(btns[1:]), btns[0], self._R_holding,
-                                                                     self.time_bef - self.time_aft))
+                                          'duration={:.2f})'.format(", ".join(btns[1:]), btns[0], self._R_holding,
+                                                                    self.time_bef - self.time_aft))
                     elif len(btns) == 1:
                         self.logger.debug('self.press(Direction({}, {:.0f}), '
-                                           'duration={:.2f})'.format(btns[0], self._R_holding,
-                                                                     self.time_bef - self.time_aft))
+                                          'duration={:.2f})'.format(btns[0], self._R_holding,
+                                                                    self.time_bef - self.time_aft))
                 elif LStick != [128, 128] and RStick != [128, 128]:
                     self.L_holding = True
                     self.R_holding = True
                     self.logger.debug('self.press([Direction({}, {:.0f}), '
-                                       'Direction({}, {:.0f})], duration={:.2f})'.format(btns[0], RStick_deg,
-                                                                                         btns[1], LStick_deg,
-                                                                                         self.time_bef - self.time_aft))
+                                      'Direction({}, {:.0f})], duration={:.2f})'.format(btns[0], RStick_deg,
+                                                                                        btns[1], LStick_deg,
+                                                                                        self.time_bef - self.time_aft))
             elif len(btns) == 1:
                 if self.L_holding:
                     self.logger.debug('self.press({}, Direction(Stick.LEFT, {:.0f}), '
-                                       'duration={:.2f})'.format(btns[0], self._L_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format(btns[0], self._L_holding,
+                                                                self.time_bef - self.time_aft))
                 elif self.R_holding:
                     self.logger.debug('self.press({}, Direction(Stick.RIGHT, {:.0f}), '
-                                       'duration={:.2f})'.format(btns[0], self._R_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format(btns[0], self._R_holding,
+                                                                self.time_bef - self.time_aft))
                 else:
                     self.logger.debug('self.press({}, duration={:.2f})'.format(btns[0],
-                                                                                self.time_bef - self.time_aft)
-                                       )
+                                                                               self.time_bef - self.time_aft)
+                                      )
             elif len(btns) > 1:
                 if self.L_holding:
                     self.logger.debug('self.press([{}, Direction(Stick.LEFT, {:.0f})], '
-                                       'duration={:.2f})'.format(", ".join(btns), self._L_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format(", ".join(btns), self._L_holding,
+                                                                self.time_bef - self.time_aft))
                 elif self.R_holding:
                     self.logger.debug('self.press([{}, Direction(Stick.RIGHT, {:.0f})], '
-                                       'duration={:.2f})'.format(", ".join(btns), self._R_holding,
-                                                                 self.time_bef - self.time_aft))
+                                      'duration={:.2f})'.format(", ".join(btns), self._R_holding,
+                                                                self.time_bef - self.time_aft))
                 else:
                     self.logger.debug('self.press([{}], duration={:.2f})'.format(", ".join(btns),
-                                                                                  self.time_bef - self.time_aft)
-                                       )
+                                                                                 self.time_bef - self.time_aft)
+                                      )
