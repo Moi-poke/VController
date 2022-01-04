@@ -26,7 +26,6 @@ from Keys import KeyPress, Button, Direction, Hat
 CURRENT_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
-
 class Settings:
     def __init__(self) -> None:
         self.logger = getLogger(__name__)
@@ -171,8 +170,7 @@ class MainUI(QMainWindow):
 
         self.model = QFileSystemModel(self.ui.treeView)
         self.ui.treeView.setModel(self.model)
-        self.ui.treeView.setRootIndex(self.model.setRootPath(CURRENT_PATH+r"\Commands"))
-
+        self.ui.treeView.setRootIndex(self.model.setRootPath(CURRENT_PATH + r"\Commands"))
 
     def showMessage(self, message: Any) -> None:
         self.status.showMessage(message)
@@ -411,7 +409,7 @@ class MainUI(QMainWindow):
             self.ui.ButtonHome.setEnabled(True)
             self.ui.ButtonMinus.setEnabled(True)
             self.ui.ButtonPlus.setEnabled(True)
-
+            # Press系統
             self.ui.HatUP.pressed.connect(self.PressHatUP)
             self.ui.HatDOWN.pressed.connect(self.PressHatDOWN)
             self.ui.HatRIGHT.pressed.connect(self.PressHatRIGHT)
@@ -463,7 +461,7 @@ class MainUI(QMainWindow):
             self.ui.ButtonHome.setDisabled(True)
             self.ui.ButtonMinus.setDisabled(True)
             self.ui.ButtonPlus.setDisabled(True)
-
+            # Press系統
             self.ui.HatUP.pressed.disconnect()
             self.ui.HatDOWN.pressed.disconnect()
             self.ui.HatRIGHT.pressed.disconnect()
@@ -535,6 +533,16 @@ class MainUI(QMainWindow):
         convert_to_Qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(self.display_width, self.display_height, Qt.KeepAspectRatio)
         return QPixmap.fromImage(p)
+
+    def ShowClickPos(self):
+        pass
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.LeftButton:
+            pos = self.ui.Camera.mapFrom(self, event.pos())
+            w, h = self.camera.capture_size
+            if 0 <= pos.x() <= self.display_width and 0 <= pos.y() <= self.display_height:
+                print(f"x:{pos.x()*w//self.display_width}, y:{pos.y()*h//self.display_height}")
 
     def closeEvent(self, event):
         confirmObject = QMessageBox.question(self, 'Message', 'Are you sure to quit?', QMessageBox.Ok,
